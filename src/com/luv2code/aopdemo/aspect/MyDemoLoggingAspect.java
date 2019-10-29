@@ -1,6 +1,7 @@
 package com.luv2code.aopdemo.aspect;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -21,12 +22,14 @@ import com.luv2code.aopdemo.Account;
 @Order(2)
 public class MyDemoLoggingAspect {
 	
+	private Logger myLogger = Logger.getLogger(getClass().getName());
+	
 	@Around("execution(* com.luv2code.aopdemo.service.*.getFortune(..))")
 	public Object aroundGetFortune(ProceedingJoinPoint theProcedingJoinPoint) throws Throwable {
 		
 		String method = theProcedingJoinPoint.getSignature().toShortString();
 		
-		System.out.println("\n =======>>> Executing @Around advice on method: " + method);
+		myLogger.info("\n =======>>> Executing @Around advice on method: " + method);
 		
 		long beginStamp = System.currentTimeMillis();
 		
@@ -39,9 +42,9 @@ public class MyDemoLoggingAspect {
 		
 		long duration = endStamp - beginStamp;
 		
-		System.out.println("\n====>> Duration: " + duration / 1000.0 + " seconds");
+		myLogger.info("\n====>> Duration: " + duration / 1000.0 + " seconds");
 		
-		System.out.println("\nThe result is: " + result);
+		myLogger.info("\nThe result is: " + result);
 		
 		return result;
 	}
@@ -51,7 +54,7 @@ public class MyDemoLoggingAspect {
 	public void afterFinallyFindAccountsAdvice(JoinPoint theJoinPoint) {
 		
 		String method = theJoinPoint.getSignature().toShortString();		
-		System.out.println("\n =======>>> Executing @After (Finally) on method: " + method);
+		myLogger.info("\n =======>>> Executing @After (Finally) on method: " + method);
 	}
 
 	
@@ -62,11 +65,10 @@ public class MyDemoLoggingAspect {
 		
 		String method = theJoinPoint.getSignature().toShortString();
 		
-		System.out.println("\n =======>>> Executing @AfterThrowing on method: " + method);
+		myLogger.info("\n =======>>> Executing @AfterThrowing on method: " + method);
 		
-		System.out.println("\n =======>>> The exception is: " + theExc);
+		myLogger.info("\n =======>>> The exception is: " + theExc);
 		
-		System.out.println();
 	}
 	
 	//Executes only with success, so not in case of exception
@@ -78,13 +80,13 @@ public class MyDemoLoggingAspect {
 		//print out which method we're advising on
 		String method = theJoinPoint.getSignature().toShortString();
 		
-		System.out.println("\n =======>>> Executing @AfterReturning on method: " + method);
+		myLogger.info("\n =======>>> Executing @AfterReturning on method: " + method);
 		
-		System.out.println("\n =======>>> The result is: " + result);
+		myLogger.info("\n =======>>> The result is: " + result);
 		
 		convertAccountNamesIntoUpperCase(result);
 		
-		System.out.println("\n =======>>> The Uppercase result is: " + result);
+		myLogger.info("\n =======>>> The Uppercase result is: " + result);
 	}
 	
 	
@@ -103,20 +105,20 @@ public class MyDemoLoggingAspect {
 		
 		MethodSignature methodSig = (MethodSignature) theJoinPoint.getSignature();
 		
-		System.out.println("\n=====>>> Executing @Before advice on method " + getClass() + " ORDER = 2");		
+		myLogger.info("\n=====>>> Executing @Before advice on method " + getClass() + " ORDER = 2");		
 		
-		System.out.println("\n Method: " + methodSig);
+		myLogger.info("\n Method: " + methodSig);
 		
 		for(Object arg: theJoinPoint.getArgs()) {
 		
-			System.out.println("\n Method arguments: " + arg);
+			myLogger.info("\n Method arguments: " + arg);
 		
 			if(arg instanceof Account) {
 				
 				Account theAccount = (Account) arg;
 				
-				System.out.println("\n Account name: " + theAccount.getName());
-				System.out.println("\n Account level: " + theAccount.getLevel());
+				myLogger.info("\n Account name: " + theAccount.getName());
+				myLogger.info("\n Account level: " + theAccount.getLevel());
 				
 			}
 		}
